@@ -1,0 +1,45 @@
+body {
+  font-family: 'VelaSans', sans-serif;
+  font-weight: 200;
+  background-color: #000;
+  color: white;
+  height: 100vh !important;
+
+  font-size: 8px;
+}
+
+.primary-color {
+  background-color: #211C1E;
+}
+.accent-color {
+  background-color: #1E181B;
+}
+.grey-color {
+  background-color: #1a1a1a;
+}
+
+h1, h2, h3 {
+  font-weight: 200;
+}
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+h2 {
+  font-size: 18px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 8px;
+  font-weight: bold;
+}
+
+.borderable {
+  border: 0.1px solid;
+  border-color: transparent;
+  padding: 10px;
+}
+
+.borderable:hover {
+  border-color: white;
+}
