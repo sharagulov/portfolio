@@ -2,19 +2,26 @@
   import { gsap } from "gsap";
   import { onMount } from "svelte";
   import { onDestroy } from "svelte";
-  export let images = [];
+  import { throttle } from "lodash";
+
+  let centerImageInterval;
+  let autoScrollTween;
+  let startTimeout;
+  let inactivityTimer;
 
   let carousel;
+  let items;
+  let projects;
   let verticalLine;
   let lineTextEl;
-  let centerImageInterval;
-  let items;
+
+  export let images = [];
+  let itemsRect = [];
 
   let infiniteImages = [...images, ...images];
 
-  let itemsRect = [];
-
   let centerX = window.innerWidth / 4;
+
   let resizeHandler = () => {
     if (verticalLine) {
       centerX = window.innerWidth / 4;
@@ -26,11 +33,16 @@
   function handleMouseEnter() {
     deleteCenterImage();
     clearInterval(centerImageInterval);
-    verticalLine.style.transition = "opacity 0.3s";
-    lineTextEl.style.transition = "opacity 0.6s";
-    verticalLine.style.opacity = "1";
-    lineTextEl.style.opacity = "1";
+    verticalLine.style.transition = "none";
+    lineTextEl.style.transition = "none";
     findCoordinates();
+
+    clearTimeout(inactivityTimer);
+
+    if (autoScrollTween) {
+      autoScrollTween.kill();
+      autoScrollTween = null;
+    }
   }
 
   function handleMouseLeave() {
@@ -38,9 +50,30 @@
     lineTextEl.style.transition = "all 0.3s";
     verticalLine.style.left = centerX + "px";
     lineTextEl.style.left = centerX + 10 + "px";
+    throttledFindUnderlineImage(centerX);
     centerImageInterval = setInterval(() => {
-      findUnderlineImage(centerX);
-    }, 100);
+      throttledFindUnderlineImage(centerX);
+    }, 300);
+
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      startAutoScroll();
+    }, 8000);
+  }
+
+  function startAutoScroll() {
+    autoScrollTween = gsap.to(carousel, {
+      scrollLeft: "+=20000",
+      duration: 800,
+      ease: "linear",
+      repeat: -1,
+      onUpdate: () => {
+        const maxScroll = carousel.scrollWidth / 2;
+        if (carousel.scrollLeft >= maxScroll) {
+          carousel.scrollLeft -= maxScroll;
+        }
+      },
+    });
   }
 
   function findCoordinates() {
@@ -55,10 +88,14 @@
     });
   }
 
-  function findUnderlineImage(variant, event) {
+  const throttledFindUnderlineImage = throttle((xPosition) => {
+    findUnderlineImage(xPosition);
+  }, 100); // каждые 100 мс
+
+  function findUnderlineImage(xPosition, event) {
     items.forEach((item, index) => {
       const rect = item.getBoundingClientRect();
-      if (variant >= rect.left && variant <= rect.right) {
+      if (xPosition >= rect.left && xPosition <= rect.right) {
         item.classList.add("activate");
         lineTextEl.textContent = infiniteImages[index]?.title;
       } else {
@@ -77,22 +114,22 @@
     const mouseX = event.clientX;
     verticalLine.style.left = mouseX + "px";
     lineTextEl.style.left = mouseX + 10 + "px";
-    findUnderlineImage(mouseX);
+    throttledFindUnderlineImage(mouseX);
   }
 
   function handleScroll(event) {
     const mouseX = event.clientX;
-    findUnderlineImage(mouseX);
 
     event.preventDefault();
     const maxScroll = carousel.scrollWidth / 2;
 
     gsap.to(carousel, {
-      scrollLeft: carousel.scrollLeft + event.deltaY * 10,
+      scrollLeft: carousel.scrollLeft + event.deltaY * 8,
       duration: 2,
       ease: "power2.out",
       onUpdate: () => {
-        findUnderlineImage(mouseX);
+        throttledFindUnderlineImage(mouseX);
+        items.forEach((item) => item.classList.remove("activate"));
         if (carousel.scrollLeft >= maxScroll) {
           carousel.scrollLeft -= maxScroll;
         } else if (carousel.scrollLeft <= 0) {
@@ -100,7 +137,7 @@
         }
       },
       onComplete: () => {
-        findUnderlineImage(mouseX);
+        throttledFindUnderlineImage(centerX);
       },
     });
   }
@@ -108,6 +145,15 @@
   onMount(() => {
     items = carousel.querySelectorAll(".carousel-item img");
     window.addEventListener("resize", resizeHandler);
+    handleMouseEnter();
+    handleMouseLeave();
+    projects.style.transition = "all 3s";
+    startTimeout = setTimeout(() => {
+      projects.style.transition = "none";
+    }, 4000);
+    startTimeout = setTimeout(() => {
+      projects.style.opacity = "1";
+    }, 1000);
   });
 
   onDestroy(() => {
@@ -123,6 +169,7 @@
   on:mouseenter={handleMouseEnter}
   on:mouseleave={handleMouseLeave}
   role="none"
+  bind:this={projects}
 >
   <div class="carousel" bind:this={carousel}>
     {#each infiniteImages as image, index (index)}
@@ -140,6 +187,7 @@
 
 <style>
   .projects-container {
+    opacity: 0;
     position: relative;
     display: flex;
     align-items: end;
@@ -162,28 +210,24 @@
     height: 100%;
     overflow: hidden;
     z-index: 10;
-    transition: filter 0.5s;
   }
 
   .carousel-item img {
     max-width: 300px;
     max-height: 200px;
     object-fit: contain;
-    filter: brightness(0.5) saturate(0);
+    filter: brightness(0.25) saturate(0);
     transition: all 0.3s ease;
-    transition-delay: 0.1s;
     z-index: 10;
   }
 
   .carousel-item:hover img,
   :global(.carousel-item img.activate) {
     filter: brightness(1) saturate(1);
-    max-width: 400px;
-    max-height: 300px;
+    scale: 1.1;
   }
 
   .vertical-line {
-    opacity: 0;
     position: absolute;
     top: 0;
     width: 2px;
@@ -195,7 +239,6 @@
 
   .line-text {
     top: 0;
-    opacity: 0;
     position: absolute;
     pointer-events: none;
     font-size: 15px;
