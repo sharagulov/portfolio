@@ -3,6 +3,7 @@
   import Main from "./lib/Main.svelte";
   import Loading from "./lib/Loading.svelte";
   import { gsap } from "gsap";
+  import Shaders from "./lib/Shaders.svelte";
 
   let showMainContent = false;
 
@@ -23,13 +24,10 @@
         },
         "+=1"
       )
-      .to(
-        ".main-content",
-        {
-          autoAlpha: 1,
-          duration: 0.5,
-        },
-      );
+      .to(".main-content", {
+        autoAlpha: 1,
+        duration: 0.5,
+      });
   });
 </script>
 
@@ -40,6 +38,8 @@
 <!-- <div class="main-content">
   <Main />
 </div> -->
+
+<!-- <Shaders /> -->
 
 <div class="overlay">
   <Main />
@@ -63,5 +63,4 @@
   .main-content {
     opacity: 0;
   }
-
 </style>

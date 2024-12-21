@@ -2,14 +2,13 @@
   import { gsap } from "gsap";
   import { onMount } from "svelte";
   import { onDestroy } from "svelte";
-  import { throttle } from "lodash";
 
   let centerImageInterval;
   let autoScrollTween;
   let startTimeout;
   let inactivityTimer;
 
-  let carousel;
+  let carousel, carouselImage;
   let items;
   let projects;
   let verticalLine;
@@ -27,7 +26,7 @@
       centerX = window.innerWidth / 4;
       verticalLine.style.left = centerX + "px";
       lineTextEl.style.left = centerX + 10 + "px";
-      throttledFindUnderlineImage(centerX);
+      findUnderlineImage(centerX);
     }
   };
 
@@ -51,9 +50,9 @@
     lineTextEl.style.transition = "all 0.3s";
     verticalLine.style.left = centerX + "px";
     lineTextEl.style.left = centerX + 10 + "px";
-    throttledFindUnderlineImage(centerX);
+    findUnderlineImage(centerX);
     centerImageInterval = setInterval(() => {
-      throttledFindUnderlineImage(centerX);
+      findUnderlineImage(centerX);
     }, 300);
 
     clearTimeout(inactivityTimer);
@@ -66,8 +65,8 @@
     if (!carousel) return;
 
     autoScrollTween = gsap.to(carousel, {
-      scrollLeft: "+=20000",
-      duration: 800,
+      scrollLeft: "+=200000000",
+      duration: 8000000,
       ease: "linear",
       repeat: -1,
       onUpdate: () => {
@@ -90,10 +89,6 @@
       };
     });
   }
-
-  const throttledFindUnderlineImage = throttle((xPosition) => {
-    findUnderlineImage(xPosition);
-  }, 100); // каждые 100 мс
 
   function findUnderlineImage(xPosition) {
     const originalLength = images.length;
@@ -129,11 +124,37 @@
     });
   }
 
+  function handleImgHover(title, index) {
+
+    lineTextEl.textContent = title;
+
+    const originalLength = images.length;
+    let activeIndex = index, pairIndex;
+    if (activeIndex < originalLength) {
+      pairIndex = activeIndex + originalLength;
+    } else {
+      pairIndex = activeIndex - originalLength;
+    }
+    items[pairIndex].classList.add("activate");
+  }
+  function handleImgLeave(index) {
+
+    const originalLength = images.length;
+    let activeIndex = index, pairIndex;
+    if (activeIndex < originalLength) {
+      pairIndex = activeIndex + originalLength;
+    } else {
+      pairIndex = activeIndex - originalLength;
+    }
+    items[pairIndex].classList.remove("activate");
+  }
+
   function handleMouseMove(event) {
     const mouseX = event.clientX;
+    const mouseY = event.clientY;
     verticalLine.style.left = mouseX + "px";
     lineTextEl.style.left = mouseX + 10 + "px";
-    throttledFindUnderlineImage(mouseX);
+    lineTextEl.style.height = mouseY - 157 + "px";
   }
 
   function handleScroll(event) {
@@ -144,20 +165,18 @@
     const maxScroll = carousel.scrollWidth / 2;
 
     gsap.to(carousel, {
-      scrollLeft: carousel.scrollLeft + event.deltaY * 5,
+      scrollLeft: carousel.scrollLeft + event.deltaY * 3,
       duration: 2,
       ease: "power2.out",
       onUpdate: () => {
-        throttledFindUnderlineImage(mouseX);
-        items.forEach((item) => item.classList.remove("activate"));
-        if (carousel.scrollLeft >= maxScroll) {
-          carousel.scrollLeft -= maxScroll;
-        } else if (carousel.scrollLeft <= 0) {
-          carousel.scrollLeft += maxScroll;
-        }
+        if (carouselImage.style)
+          if (carousel.scrollLeft >= maxScroll) {
+            carousel.scrollLeft -= maxScroll;
+          } else if (carousel.scrollLeft <= 0) {
+            carousel.scrollLeft += maxScroll;
+          }
       },
-      onComplete: () => {
-      },
+      onComplete: () => {},
     });
   }
 
@@ -173,7 +192,6 @@
     setTimeout(() => {
       projects.style.opacity = "1";
     }, 1000);
-
   });
 
   onDestroy(() => {
@@ -197,8 +215,18 @@
 >
   <div class="carousel" bind:this={carousel}>
     {#each infiniteImages as image, index (index)}
-      <div class="carousel-item">
-        <img src={image.src} alt={`Project ${index + 1}`} loading="lazy" />
+      <div
+        class="carousel-item"
+        on:mouseenter={() => handleImgHover(image.title, index)}
+        on:mouseleave={() => handleImgLeave(index)}
+        role="none"
+      >
+        <img
+          src={image.src}
+          alt={`Project ${index + 1}`}
+          loading="lazy"
+          bind:this={carouselImage}
+        />
         <p class="small-text">X: {itemsRect[index]?.left}</p>
         <p class="small-text">PRCSN: {itemsRect[index]?.right - 2000}</p>
       </div>
@@ -242,7 +270,6 @@
     object-fit: contain;
     filter: brightness(0.25) saturate(0);
     transition: all 0.3s ease;
-    transition-delay: 0.1s;
     z-index: 10;
   }
 
@@ -267,6 +294,8 @@
     pointer-events: none;
     font-size: 30px;
     line-height: 1;
+    align-content: end;
+    max-height: 570px;
   }
 
   .small-text {
