@@ -26,7 +26,8 @@
     if (verticalLine) {
       centerX = window.innerWidth / 4;
       verticalLine.style.left = centerX + "px";
-      findUnderlineImage(centerX);
+      lineTextEl.style.left = centerX + 10 + "px";
+      throttledFindUnderlineImage(centerX);
     }
   };
 
@@ -62,6 +63,8 @@
   }
 
   function startAutoScroll() {
+    if (!carousel) return;
+
     autoScrollTween = gsap.to(carousel, {
       scrollLeft: "+=20000",
       duration: 800,
@@ -92,18 +95,34 @@
     findUnderlineImage(xPosition);
   }, 100); // каждые 100 мс
 
-  function findUnderlineImage(xPosition, event) {
-    items.forEach((item, index) => {
-      const rect = item.getBoundingClientRect();
-      if (xPosition >= rect.left && xPosition <= rect.right) {
-        item.classList.add("activate");
-        lineTextEl.textContent = infiniteImages[index]?.title;
-      } else {
-        item.classList.remove("activate");
-      }
-    });
-  }
+  function findUnderlineImage(xPosition) {
+    const originalLength = images.length;
+    let activeIndex = null;
 
+    for (let i = 0; i < items.length; i++) {
+      const rect = items[i].getBoundingClientRect();
+      if (xPosition >= rect.left && xPosition <= rect.right) {
+        activeIndex = i;
+        break;
+      }
+    }
+
+    items.forEach((item) => item.classList.remove("activate"));
+
+    if (activeIndex !== null) {
+      let pairIndex;
+      if (activeIndex < originalLength) {
+        pairIndex = activeIndex + originalLength;
+      } else {
+        pairIndex = activeIndex - originalLength;
+      }
+
+      items[activeIndex].classList.add("activate");
+      items[pairIndex].classList.add("activate");
+
+      lineTextEl.textContent = infiniteImages[activeIndex]?.title;
+    }
+  }
   function deleteCenterImage() {
     items.forEach((item) => {
       item.classList.remove("activate");
@@ -124,7 +143,7 @@
     const maxScroll = carousel.scrollWidth / 2;
 
     gsap.to(carousel, {
-      scrollLeft: carousel.scrollLeft + event.deltaY * 8,
+      scrollLeft: carousel.scrollLeft + event.deltaY * 5,
       duration: 2,
       ease: "power2.out",
       onUpdate: () => {
@@ -148,17 +167,27 @@
     handleMouseEnter();
     handleMouseLeave();
     projects.style.transition = "all 3s";
-    startTimeout = setTimeout(() => {
+    setTimeout(() => {
       projects.style.transition = "none";
     }, 4000);
-    startTimeout = setTimeout(() => {
+    setTimeout(() => {
       projects.style.opacity = "1";
     }, 1000);
+
+    setTimeout(() => {
+      if (carousel) {
+        startAutoScroll();
+      }
+    }, 4000);
   });
 
   onDestroy(() => {
     window.removeEventListener("resize", resizeHandler);
     clearInterval(centerImageInterval);
+    if (autoScrollTween) {
+      autoScrollTween.kill();
+      autoScrollTween = null;
+    }
   });
 </script>
 
@@ -213,18 +242,18 @@
   }
 
   .carousel-item img {
-    max-width: 300px;
-    max-height: 200px;
+    max-width: 600px;
+    max-height: 400px;
     object-fit: contain;
     filter: brightness(0.25) saturate(0);
     transition: all 0.3s ease;
+    transition-delay: 0.1s;
     z-index: 10;
   }
 
   .carousel-item:hover img,
   :global(.carousel-item img.activate) {
     filter: brightness(1) saturate(1);
-    scale: 1.1;
   }
 
   .vertical-line {
@@ -241,11 +270,11 @@
     top: 0;
     position: absolute;
     pointer-events: none;
-    font-size: 15px;
+    font-size: 30px;
     line-height: 1;
   }
 
   .small-text {
-    font-size: 5px;
+    font-size: 10px;
   }
 </style>

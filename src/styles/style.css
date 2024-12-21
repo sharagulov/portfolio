@@ -5,7 +5,7 @@ body {
   color: white;
   height: 100vh !important;
 
-  font-size: 8px;
+  font-size: 16px;
 }
 
 .primary-color {
@@ -22,15 +22,15 @@ h1, h2, h3 {
   font-weight: 200;
 }
 h1 {
-  font-size: 25px;
+  font-size: 50px;
   font-weight: bold;
 }
 h2 {
-  font-size: 18px;
+  font-size: 36px;
   font-weight: bold;
 }
 h3 {
-  font-size: 8px;
+  font-size: 16px;
   font-weight: bold;
 }
 

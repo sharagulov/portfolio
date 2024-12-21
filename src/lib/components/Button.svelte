@@ -18,7 +18,7 @@
 
   .xy {
     color: transparent;
-    font-size: 5px;
+    font-size: 10px;
   }
 
   .xy.active {

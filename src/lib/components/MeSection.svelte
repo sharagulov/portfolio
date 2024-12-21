@@ -42,7 +42,7 @@
       justify-content: space-between;
 
       .me-text-flex-container {
-        max-width: 150px;
+        max-width: 300px;
         display: flex;
         flex-direction: column;
         gap: 10px;
