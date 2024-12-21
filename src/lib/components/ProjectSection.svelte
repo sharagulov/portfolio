@@ -137,6 +137,7 @@
   }
 
   function handleScroll(event) {
+    clearTimeout(inactivityTimer);
     const mouseX = event.clientX;
 
     event.preventDefault();
@@ -156,7 +157,6 @@
         }
       },
       onComplete: () => {
-        throttledFindUnderlineImage(centerX);
       },
     });
   }
@@ -174,11 +174,6 @@
       projects.style.opacity = "1";
     }, 1000);
 
-    setTimeout(() => {
-      if (carousel) {
-        startAutoScroll();
-      }
-    }, 4000);
   });
 
   onDestroy(() => {
