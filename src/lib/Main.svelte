@@ -1,13 +1,49 @@
+<!-- src/lib/Main.svelte -->
 <script>
   import Header from "./components/Header.svelte";
   import ProjectsSection from "./components/ProjectSection.svelte";
   import MeSection from "./components/MeSection.svelte";
-  import { onMount } from "svelte";
+  import { gsap } from "gsap";
+  import Loading from "./Loading.svelte";
+  import Shaders from "./Shaders.svelte";
 
   let activeSection = "Projects";
 
+  // Чёрный оверлей для переходов между секциями
+  let transitionOverlay, loadInstance;
+
   function setActiveSection(section) {
-    activeSection = section;
+    if (section === activeSection) return;
+
+    const timeline = gsap.timeline({
+      onComplete: () => {
+        activeSection = section;
+        gsap.to(transitionOverlay, {
+          autoAlpha: 0,
+          duration: 0.2,
+          zIndex: -9999
+        });
+        gsap.to(".container-main", {
+          scale: 1,
+        });
+      },
+    });
+    // Показать оверлей
+    loadInstance.restartAnimation();
+    timeline
+      .to(transitionOverlay, {
+        autoAlpha: 1,
+        duration: 0.2,
+        zIndex: 9999,
+      })
+      .to(
+        ".container-main",
+        {
+          scale: 1.1,
+        },
+        "<"
+      )
+      .to({}, { duration: 1 });
   }
 
   /** @type {Record<string, { default: string }>} */
@@ -25,12 +61,17 @@
   projectImages.sort(() => 0.5 - Math.random());
 </script>
 
-<main class="main-container">
-  <div class="container-header">
-    <Header {activeSection} {setActiveSection} />
+<div class="main-wrapper">
+  <div class="transition-overlay" bind:this={transitionOverlay}>
+    <Loading bind:this={loadInstance} />
   </div>
 
+  <Header {activeSection} {setActiveSection} />
+
   <div class="container-main">
+    <div class="background">
+      <Shaders />
+    </div>
     {#if activeSection === "Me"}
       <MeSection />
     {/if}
@@ -41,23 +82,43 @@
       <div class="section">This is the 'This' section.</div>
     {/if}
   </div>
-</main>
+</div>
 
 <style>
-  .main-container {
+  .main-wrapper {
     display: flex;
     flex-direction: column;
+    position: relative;
     height: 100vh;
-    margin: 0;
+    width: 100vw;
   }
 
-  .container-header {
-    width: 100%;
-    height: fit-content;
+  .transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
   }
 
   .container-main {
-    flex-grow: 1;
+    position: relative;
+    z-index: 0;
     height: 100%;
     color: white;
   }

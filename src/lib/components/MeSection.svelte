@@ -1,3 +1,5 @@
+<!-- src/lib/components/MeSection.svelte -->
+
 <script></script>
 
 <div class="me-section section">
@@ -34,8 +36,9 @@
 
 <style>
   .me-section {
-    padding: 10vw;
+    padding: 10vh 6vw;
     align-content: center;
+    height: 100%;
 
     .me-flex-container {
       display: flex;

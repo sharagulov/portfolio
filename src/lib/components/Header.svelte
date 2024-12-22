@@ -1,10 +1,9 @@
+<!-- src/lib/components/Header.svelte -->
+
 <script>
   import Button from "./Button.svelte";
   export let activeSection; // Получаем текущее активное состояние
   export let setActiveSection; // Функция для смены активного раздела
-
-
-  
 </script>
 
 <div class="container-header">
@@ -36,6 +35,7 @@
 
 <style>
   .container-header {
+    z-index: 100;
     padding: 50px;
     height: fit-content;
     flex-shrink: 0; /* Предотвращаем сжатие */

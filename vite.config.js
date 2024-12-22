@@ -7,7 +7,6 @@ export default defineConfig({
   resolve: {
     alias: {
       three : 'three',
-      lodash : 'lodash',
     }
   }
 })

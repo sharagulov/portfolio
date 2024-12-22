@@ -1,29 +1,50 @@
 <script>
-  import "../styles/fonts.css";
-  import loadingSvg from "../public/ripples.svg";
+  import { onMount } from "svelte";
+  import { gsap } from "gsap";
+
+  let movingRect, timeline;
+
+  function restartAnimation() {
+    if(timeline) {
+      timeline.restart();
+    }
+  }
+
+  onMount(() => {
+    timeline = gsap.timeline();
+    timeline
+    .to(movingRect, {
+        width: "300px", //
+        duration: 1.5,
+        ease: "power1.inOut",
+      });
+  });
+
+  export { restartAnimation };
 </script>
 
-<div class="global-container">
-  <div class="container grey-color">
-    <img src={loadingSvg} alt="Loading SVG" />
-  </div>
+<div class="loader">
+  <div class="moving-rect" bind:this={movingRect}></div>
 </div>
 
 <style>
-  .global-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
-
-  .container {
-    padding: 10px;
+  .loader {
+    width: 300px;
+    height: 20px;
     border-radius: 10px;
+    border: 2px solid;
+    overflow: hidden;
+    position: relative;
+    z-index: 9999;
   }
 
-  img {
-    width: 30px;
-    height: 30px;
+  .moving-rect {
+    width: 0px;
+    height: 100%;
+    background-color: #3498db;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 </style>

@@ -1,7 +1,10 @@
+<!-- src/lib/components/ProjectSection.svelte -->
+
 <script>
   import { gsap } from "gsap";
   import { onMount } from "svelte";
   import { onDestroy } from "svelte";
+  import { selectedTitle } from "../../stores/selectedTitle";
 
   let centerImageInterval;
   let autoScrollTween;
@@ -125,11 +128,12 @@
   }
 
   function handleImgHover(title, index) {
-
+    selectedTitle.set(title); // Обновляем store с новым заголовком
     lineTextEl.textContent = title;
 
     const originalLength = images.length;
-    let activeIndex = index, pairIndex;
+    let activeIndex = index,
+      pairIndex;
     if (activeIndex < originalLength) {
       pairIndex = activeIndex + originalLength;
     } else {
@@ -138,9 +142,9 @@
     items[pairIndex].classList.add("activate");
   }
   function handleImgLeave(index) {
-
     const originalLength = images.length;
-    let activeIndex = index, pairIndex;
+    let activeIndex = index,
+      pairIndex;
     if (activeIndex < originalLength) {
       pairIndex = activeIndex + originalLength;
     } else {
@@ -165,7 +169,7 @@
     const maxScroll = carousel.scrollWidth / 2;
 
     gsap.to(carousel, {
-      scrollLeft: carousel.scrollLeft + event.deltaY * 3,
+      scrollLeft: carousel.scrollLeft + event.deltaY * 7,
       duration: 2,
       ease: "power2.out",
       onUpdate: () => {
@@ -185,13 +189,6 @@
     window.addEventListener("resize", resizeHandler);
     handleMouseEnter();
     handleMouseLeave();
-    projects.style.transition = "all 3s";
-    setTimeout(() => {
-      projects.style.transition = "none";
-    }, 4000);
-    setTimeout(() => {
-      projects.style.opacity = "1";
-    }, 1000);
   });
 
   onDestroy(() => {
@@ -239,7 +236,6 @@
 
 <style>
   .projects-container {
-    opacity: 0;
     position: relative;
     display: flex;
     align-items: end;
