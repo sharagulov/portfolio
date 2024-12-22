@@ -86,9 +86,9 @@
               brightness = clamp(brightness, 0.6, 1.0);
               
               // Небольшие цветовые отклонения для каждого канала
-              float colorVariationR = 0.1 * sin(u_time * v_frequency + v_phase * 3.0);
+              float colorVariationR = 0.15 * sin(u_time * v_frequency + v_phase * 3.0);
               float colorVariationG = 0.05 * sin(u_time * v_frequency + v_phase * 2.0 + 1.0);
-              float colorVariationB = 0.07 * sin(u_time * v_frequency + v_phase * 4.0 + 2.0);
+              float colorVariationB = 0.05 * sin(u_time * v_frequency + v_phase * 4.0 + 2.0);
               
               vec3 color = vec3(
                   clamp(brightness + colorVariationR, 0.0, 1.0),

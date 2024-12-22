@@ -18,7 +18,7 @@
           autoAlpha: 0,
         },
         "+=1"
-      )
+      );
   });
 </script>
 
@@ -31,7 +31,6 @@
 </div>
 
 <style>
-
   .black-overlay {
     opacity: 1;
     position: fixed;
@@ -45,5 +44,4 @@
     align-items: center;
     justify-content: center;
   }
-
 </style>

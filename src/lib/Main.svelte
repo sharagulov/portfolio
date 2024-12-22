@@ -43,7 +43,7 @@
         },
         "<"
       )
-      .to({}, { duration: 1 });
+      .to({}, { duration: 0.5 });
   }
 
   /** @type {Record<string, { default: string }>} */

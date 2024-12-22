@@ -15,8 +15,8 @@
     timeline
     .to(movingRect, {
         width: "300px", //
-        duration: 1.5,
-        ease: "power1.inOut",
+        duration: 1,
+        ease: "power3.inOut",
       });
   });
 
@@ -30,7 +30,7 @@
 <style>
   .loader {
     width: 300px;
-    height: 20px;
+    height: 10px;
     border-radius: 10px;
     border: 2px solid;
     overflow: hidden;
@@ -41,7 +41,7 @@
   .moving-rect {
     width: 0px;
     height: 100%;
-    background-color: #3498db;
+    background-color: white;
     border-radius: 10px;
     position: absolute;
     top: 0;
