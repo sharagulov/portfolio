@@ -39,7 +39,7 @@
     width: 100vw;
     height: 100vh;
     background: black;
-    z-index: 10;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;

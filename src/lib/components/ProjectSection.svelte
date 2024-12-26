@@ -8,7 +8,6 @@
 
   let centerImageInterval;
   let autoScrollTween;
-  let startTimeout;
   let inactivityTimer;
 
   let carousel, carouselImage;
@@ -16,6 +15,10 @@
   let projects;
   let verticalLine;
   let lineTextEl;
+
+  let touchStartX = 0;
+  let scrollStartX = 0;
+  let currentNameMobile;
 
   export let images = [];
   let itemsRect = [];
@@ -33,7 +36,29 @@
     }
   };
 
+  // <-- МОБИЛКА -->
+
+  function checkScreenSize() {
+    if (window.innerWidth <= 1500) return 1;
+    else return 0;
+  }
+
+  function handleTouchStart(event) {
+    touchStartX = event.touches[0].clientX;
+    scrollStartX = carousel.scrollLeft;
+  }
+
+  function handleTouchMove(event) {
+    const touchX = event.touches[0].clientX;
+    const deltaX = touchStartX - touchX;
+    carousel.scrollLeft = scrollStartX + deltaX;
+  }
+
+  // <-- КОНЕЦ МОБИЛКИ -->
+
   function handleMouseEnter() {
+    if (checkScreenSize()) return;
+
     deleteCenterImage();
     clearInterval(centerImageInterval);
     verticalLine.style.transition = "none";
@@ -49,6 +74,8 @@
   }
 
   function handleMouseLeave() {
+    if (checkScreenSize()) return;
+
     verticalLine.style.transition = "all 0.3s";
     lineTextEl.style.transition = "all 0.3s";
     verticalLine.style.left = centerX + "px";
@@ -129,6 +156,7 @@
 
   function handleImgHover(title, index) {
     selectedTitle.set(title); // Обновляем store с новым заголовком
+    currentNameMobile = title;
     lineTextEl.textContent = title;
 
     const originalLength = images.length;
@@ -154,6 +182,8 @@
   }
 
   function handleMouseMove(event) {
+    if (checkScreenSize()) return;
+
     const mouseX = event.clientX;
     const mouseY = event.clientY;
     verticalLine.style.left = mouseX + "px";
@@ -162,8 +192,9 @@
   }
 
   function handleScroll(event) {
+    if (checkScreenSize()) return;
+
     clearTimeout(inactivityTimer);
-    const mouseX = event.clientX;
 
     event.preventDefault();
     const maxScroll = carousel.scrollWidth / 2;
@@ -189,6 +220,7 @@
     window.addEventListener("resize", resizeHandler);
     handleMouseEnter();
     handleMouseLeave();
+    handleImgHover(images[0].title, 0);
   });
 
   onDestroy(() => {
@@ -207,10 +239,15 @@
   on:mousemove={handleMouseMove}
   on:mouseenter={handleMouseEnter}
   on:mouseleave={handleMouseLeave}
+  on:touchstart={handleTouchStart}
+  on:touchmove={handleTouchMove}
   role="none"
   bind:this={projects}
 >
   <div class="carousel" bind:this={carousel}>
+    {#if currentNameMobile}
+      <div class="mobile-title">{currentNameMobile}</div>
+    {/if}
     {#each infiniteImages as image, index (index)}
       <div
         class="carousel-item"
@@ -240,7 +277,6 @@
     display: flex;
     align-items: end;
     height: 100%;
-    overflow: hidden;
   }
 
   .carousel {
@@ -267,6 +303,7 @@
     filter: brightness(0.25) saturate(0);
     transition: all 0.3s ease;
     z-index: 10;
+    user-select: none;
   }
 
   .carousel-item:hover img,
@@ -292,9 +329,49 @@
     line-height: 1;
     align-content: end;
     max-height: 570px;
+    font-family: novoposelensky;
+  }
+
+  .mobile-title {
+    font-family: novoposelensky;
+    position: fixed;
+    top: 200px;
+    justify-content: center;
+    z-index: 500;
+    width: 100%;
+    display: none;
   }
 
   .small-text {
     font-size: 10px;
+    opacity: 0.5;
+  }
+
+  @media (max-height: 800px) {
+    .carousel-item img {
+      max-height: 40vh;
+    }
+    .small-text {
+      font-size: 1vh;
+    }
+  }
+
+  @media (max-width: 1500px) {
+    .carousel-item {
+      padding-bottom: 100px;
+      height: 90svh;
+    }
+    .vertical-line,
+    .line-text {
+      display: none;
+    }
+    .mobile-title {
+      display: flex;
+    }
+    .carousel-item img {
+      filter: brightness(1) saturate(1);
+      max-width: 300px;
+      max-height: 200px;
+    }
   }
 </style>

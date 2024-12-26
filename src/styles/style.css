@@ -24,6 +24,9 @@ h1, h2, h3 {
 h1 {
   font-size: 50px;
   font-weight: bold;
+  font-family: novoposelensky;
+
+  
 }
 h2 {
   font-size: 36px;
@@ -43,3 +46,12 @@ h3 {
 .borderable:hover {
   border-color: white;
 }
+
+@media (max-width: 1500px) {
+  h1 {
+    font-size: 3vw; 
+  }
+  p {
+    font-size: 2vw;
+  }
+ }

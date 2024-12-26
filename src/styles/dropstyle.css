@@ -7,6 +7,8 @@
 
 * {
   box-sizing: border-box; /* Учитывает padding и border в ширине и высоте элемента */
+  font-weight: 200;
+  user-select: none;
 }
 
 /* Убираем внутренние отступы */
@@ -42,7 +44,7 @@ button {
 body {
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
-  line-height: 1.5;
+  line-height: 1.25;
   overflow: hidden;
 }
 

@@ -52,4 +52,12 @@
       }
     }
   }
+
+  @media (max-width: 700px) {
+    .me-flex-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+  }
 </style>

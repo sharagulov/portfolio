@@ -8,5 +8,9 @@ export default defineConfig({
     alias: {
       three : 'three',
     }
+  },
+  server: {
+    host: true,
+    port: 5174,
   }
 })
