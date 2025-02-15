@@ -5,30 +5,21 @@
 <div class="me-section section">
   <div class="me-flex-container">
     <div class="me-text-flex-container">
-      <h3>Lorem, ipsum.</h3>
+      <h3>Фронтенд</h3>
       <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam,
-        sit quisquam! Eos aspernatur animi nostrum corporis consequuntur magnam
-        in fuga porro impedit ab ipsam perferendis dolorum amet vel
+        Фронтенд на протяжении нескольких лет притягивает меня своей эластичностью и гибкостью. Он дает возможность скрытым талантам проявиться, а знакомым — подтвердить свою силу. 
       </p>
     </div>
     <div class="me-text-flex-container">
-      <h3>Lorem, ipsum.</h3>
+      <h3>Что я такое?</h3>
       <p>
-        Quam incidunt ipsum, ullam praesentium culpa totam quidem. Nobis
-        accusamus incidunt nostrum architecto recusandae neque, nesciunt ipsa
-        minus, at cum, harum animi. Cupiditate, debitis magni sequi delectus
-        aliquid sint illum quo maxime, modi temporibus cumque rerum obcaecati.
-        Officia necessitatibus eos officiis voluptates quis velit asperiores
-        unde possimus
+        Еще в школе я заинтересовался HTML/CSS и стал двигаться дальше в этом направлении: узнал о JavaScript, выучил и полюбил его. После с уверенностью пошел в сферу фронтенда, начал эксперименты с библиотекой React и познакомился с Vue, Svelte и Next. 
       </p>
     </div>
     <div class="me-text-flex-container">
-      <h3>Lorem, ipsum.</h3>
+      <h3>Еще навыки?</h3>
       <p>
-        Iure repudiandae ullam, aliquam earum impedit esse veritatis adipisci
-        voluptate optio soluta laborum modi sequi! Enim nulla quam, minus natus
-        neque sunt adipisci cum.
+        Стараясь получать многостороннее развитие, начал самостоятельно ставить себе задачи и выполнять их. Пока не нашел команду, вел разработку в одиночку: от прототипа в Figma/Photoshop через вёрстку до итогового тестирования продукта, выявления и исправления косяков.
       </p>
     </div>
   </div>
@@ -53,7 +44,7 @@
     }
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 1370px) {
     .me-flex-container {
       flex-direction: column;
       align-items: center;

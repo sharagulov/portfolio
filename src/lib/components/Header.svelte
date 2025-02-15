@@ -100,7 +100,7 @@
     gap: 5px;
   }
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1000px) {
     .second-container {
       display: none;
     }

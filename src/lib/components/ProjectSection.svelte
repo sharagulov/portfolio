@@ -39,7 +39,7 @@
   // <-- МОБИЛКА -->
 
   function checkScreenSize() {
-    if (window.innerWidth <= 1500) return 1;
+    if (window.innerWidth <= 1000) return 1;
     else return 0;
   }
 
@@ -356,7 +356,7 @@
     }
   }
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1000px) {
     .carousel-item {
       padding-bottom: 100px;
       height: 90svh;

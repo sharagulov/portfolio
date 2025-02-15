@@ -47,7 +47,7 @@
   }
 
   /** @type {Record<string, { default: string }>} */
-  const images = import.meta.glob("../assets/img/*.png", { eager: true });
+  const images = import.meta.glob("../assets/portfs/*.png", { eager: true });
 
   let projectImages = Object.entries(images).map(([path, mod]) => {
     const fileName = path.split("/").pop().replace(".png", "");
@@ -79,7 +79,7 @@
       <ProjectsSection images={projectImages} />
     {/if}
     {#if activeSection === "This"}
-      <div class="section">This is the 'This' section.</div>
+      <div class="section">Страница в разработке</div>
     {/if}
   </div>
 </div>
@@ -125,5 +125,8 @@
 
   .section {
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
